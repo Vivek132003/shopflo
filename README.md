@@ -13,7 +13,7 @@ Assuming we are already having a user service thats why i am passing random user
 2)http://localhost:8080/api/v1/posts/{user_id}/analysis
 Fetching all the post details using user id
 
-http://localhost:8080/api/v1/post/{post_id}/analysis
+3)http://localhost:8080/api/v1/post/{post_id}/analysis
 Fetching particular post details using post id
 
 Cache: Used inbuilt sprinboot cache to handle get requests
