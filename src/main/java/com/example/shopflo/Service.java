@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @org.springframework.stereotype.Service
@@ -68,6 +70,45 @@ public class Service implements Base
             }
             object.put("NumberOfWords",no_of_words);
             object.put("AverageWordlength",sum/no_of_words);
+        }
+        catch (SQLException e)
+        {
+            throw new SQLException(e.getMessage());
+        }
+        return object;
+    }
+
+    @Override
+    @Cacheable(value = "userAnalysisData",key="#userId")
+    public synchronized JSONObject getUserData(int userId) throws SQLException {
+        JSONObject object=new JSONObject();
+        try
+        {
+            String postDetailsQuery="select postid,content from postdata where user_id = ?";
+            PreparedStatement preparedStatement=connection.prepareStatement(postDetailsQuery);
+            preparedStatement.setString(1,String.valueOf(userId));
+            System.out.println(preparedStatement);
+            ResultSet info= preparedStatement.executeQuery();
+            List<JSONObject> posts=new ArrayList<>();
+            System.out.println(userId);
+            while (info.next())
+            {
+                int post_id=info.getInt("postid");
+                String content=info.getString("content");
+                JSONObject post_data=new JSONObject();
+                String content_data[]=content.split(" ");
+                int no_of_words=content_data.length;
+                int sum=0;
+                for(String word:content_data)
+                {
+                    sum+=word.length();
+                }
+                post_data.put("post_id",post_id);
+                post_data.put("No_of_words",no_of_words);
+                post_data.put("Average_word_length",sum/no_of_words);
+                posts.add(post_data);
+            }
+            object.put("post_details",posts);
         }
         catch (SQLException e)
         {

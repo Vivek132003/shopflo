@@ -34,7 +34,7 @@ public class controller
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    @GetMapping(value = "{id}/analysis")
+    @GetMapping(value = "post/{id}/analysis")
     public ResponseEntity<JSONObject> fetch(@PathVariable("id") int postId)
     {
         JSONObject response =new JSONObject();
@@ -46,6 +46,27 @@ public class controller
         try
         {
             response=service.getAnalysis(postId);
+        }
+        catch (SQLException e)
+        {
+            response.put("failure_reason",e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "posts/{id}/analysis")
+    public ResponseEntity<JSONObject> fetchAll(@PathVariable("id") int userid)
+    {
+        JSONObject response =new JSONObject();
+        if(!rateLimiter.tryAcquire())
+        {
+            response.put("failure_reason","more requests");
+            return new ResponseEntity<>(response,HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
+        }
+        try
+        {
+            response=service.getUserData(userid);
         }
         catch (SQLException e)
         {

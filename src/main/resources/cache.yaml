@@ -1,2 +1,5 @@
 spring.cache.cache-names=postAnalysisData
 spring.cache.caffeine.spec=maximumSize=100
+
+spring.cache.cache-names=userAnalysisData
+spring.cache.caffeine.spec=maximumSize=100
